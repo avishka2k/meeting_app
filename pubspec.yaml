@@ -33,6 +33,7 @@ dependencies:
   jitsi_meet: ^4.0.0
   google_sign_in: ^5.4.0
   firebase_auth: ^3.4.1
+  firebase_core: ^1.19.1
 
 dev_dependencies:
   flutter_test:
