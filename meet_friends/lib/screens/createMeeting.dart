@@ -1,25 +1,42 @@
 // ignore_for_file: file_names
 
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:jitsi_meet/feature_flag/feature_flag.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
+import 'package:meet_friends/model/historyMethode.dart';
+import 'package:meet_friends/model/userModel.dart';
 
-class JoinWithId extends StatefulWidget {
-  const JoinWithId({Key? key}) : super(key: key);
+class CreateMeeting extends StatefulWidget {
+  const CreateMeeting({Key? key}) : super(key: key);
 
   @override
-  State<JoinWithId> createState() => _JoinWithIdState();
+  State<CreateMeeting> createState() => _CreateMeetingState();
 }
 
-class _JoinWithIdState extends State<JoinWithId> {
-  bool audioCheckeds = true;
-  bool videoChecked = false;
-
-  final _joinWithId = TextEditingController();
-  final _name = TextEditingController();
-
+class _CreateMeetingState extends State<CreateMeeting> {
+  final FirestoreMethods _firestoreMethods = FirestoreMethods();
+  final _meetingName = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  User user = FirebaseAuth.instance.currentUser!;
+  UserModel loggedUser = UserModel();
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get()
+        .then((value) {
+      loggedUser = UserModel.fromMap(value.data());
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,18 +56,12 @@ class _JoinWithIdState extends State<JoinWithId> {
             child: Column(
               children: [
                 const SizedBox(height: 50),
-                textField(
-                    _joinWithId, 'Join With Meeting ID', 'Can\'t be empty'),
-                const SizedBox(height: 30),
-                textField(_name, 'Your Name', 'Please enter your name'),
-                const SizedBox(height: 30),
-                audioCheckBox(),
-                videoCheckBox(),
+                textField(_meetingName, 'Meeting Name', 'Can\'t be empty'),
                 const SizedBox(height: 50),
-                saveBtn('Join', () {
+                saveBtn('Create', () {
                   if (_formKey.currentState!.validate()) {
-                    joinMeeting(_joinWithId.text, audioCheckeds, videoChecked);
-                    print('object');
+                    createNewMeeting();
+                    //joinMeeting('2323dfdf224', true, true);
                   }
                 })
               ],
@@ -58,68 +69,6 @@ class _JoinWithIdState extends State<JoinWithId> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget audioCheckBox() {
-    return Row(
-      children: [
-        Checkbox(
-          checkColor: Colors.white,
-          activeColor: HexColor('#348DF5'),
-          side: BorderSide(
-            color: HexColor('#B4B4B4'),
-            width: 2,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
-          ),
-          value: audioCheckeds,
-          onChanged: (value) {
-            setState(() {
-              audioCheckeds = value!;
-            });
-          },
-        ),
-        Text(
-          'Do not Connect to audio',
-          style: TextStyle(
-            fontSize: 13,
-            color: HexColor('#B4B4B4'),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget videoCheckBox() {
-    return Row(
-      children: [
-        Checkbox(
-          checkColor: Colors.white,
-          activeColor: HexColor('#348DF5'),
-          side: BorderSide(
-            color: HexColor('#B4B4B4'),
-            width: 2,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
-          ),
-          value: videoChecked,
-          onChanged: (value) {
-            setState(() {
-              videoChecked = value!;
-            });
-          },
-        ),
-        Text(
-          'Turn off my video',
-          style: TextStyle(
-            fontSize: 13,
-            color: HexColor('#B4B4B4'),
-          ),
-        ),
-      ],
     );
   }
 
@@ -222,13 +171,29 @@ class _JoinWithIdState extends State<JoinWithId> {
       featureFlag.resolution = FeatureFlagVideoResolution.HD_RESOLUTION;
 
       var options = JitsiMeetingOptions(room: roomName)
-        ..userDisplayName = _name.text
+        ..subject = _meetingName.text
+        ..userDisplayName = loggedUser.name
+        ..userEmail = loggedUser.email
+        ..userAvatarURL = loggedUser.imageUrl // or .png
         ..audioMuted = audioState
         ..videoMuted = videoState;
+
+      _firestoreMethods.addToMeetingHistory(_meetingName.text);
 
       await JitsiMeet.joinMeeting(options);
     } catch (error) {
       debugPrint("error: $error");
     }
+  }
+
+  createNewMeeting() async {
+    const _chars =
+        'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    Random _rnd = Random();
+
+    String getRandomString(int length) =>
+        String.fromCharCodes(Iterable.generate(
+            length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+    joinMeeting(getRandomString(9), true, true);
   }
 }

@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, prefer_const_constructors, non_constant_identifier_names, avoid_print
 import 'dart:io';
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -32,14 +33,13 @@ class _EditProfileState extends State<EditProfile> {
         this.imageinGallery = imageTemp;
       });
     } on PlatformException catch (e) {
-      print('Fiale dfdff: $e');
+      print('Fail: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HexColor('#323745'),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -47,40 +47,54 @@ class _EditProfileState extends State<EditProfile> {
           color: HexColor('#5AA6FF'),
         ),
       ),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: Center(
-              child: Column(
-                children: [
-                  const SizedBox(height: 20),
-                  Stack(
-                    children: [
-                      profileImg(),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: pickImage(),
+      body: StreamBuilder(
+          stream: FirebaseAuth.instance.userChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Form(
+                key: _formKey,
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 20),
+                          Stack(
+                            children: [
+                              profileImg(),
+                              Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: pickImage(),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 50),
+                          textField(_firstName_controller, 'First Name',
+                              'Can\'t empty'),
+                          const SizedBox(height: 30),
+                          textField(_lastName_controller, 'Last Name',
+                              'Can\'t empty'),
+                          const SizedBox(height: 100),
+                          saveBtn('Save', () {
+                            if (_formKey.currentState!.validate()) {
+                              updateDisplayName(
+                                _firstName_controller.text,
+                                _lastName_controller.text,
+                              );
+                            }
+                          }),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                  const SizedBox(height: 50),
-                  textField(
-                      _firstName_controller, 'First Name', 'Can\'t empty'),
-                  const SizedBox(height: 30),
-                  textField(_lastName_controller, 'Last Name', 'Can\'t empty'),
-                  const SizedBox(height: 100),
-                  saveBtn('Save', () {
-                    if (_formKey.currentState!.validate()) {}
-                  }),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+                ),
+              );
+            } else {
+              return Container();
+            }
+          }),
     );
   }
 
@@ -216,5 +230,20 @@ class _EditProfileState extends State<EditProfile> {
         ),
       ),
     );
+  }
+
+  Future<void> updateDisplayName(String fname, String lname) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await user.updateDisplayName('$fname $lname');
+    }
+    Navigator.pop(context);
+  }
+
+  Future<void> updatePhotoUrl(photoURL) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await user.updatePhotoURL(photoURL);
+    }
   }
 }

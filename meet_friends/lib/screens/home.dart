@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:jitsi_meet/feature_flag/feature_flag.dart';
-import 'package:jitsi_meet/jitsi_meet.dart';
+import 'package:meet_friends/screens/createMeeting.dart';
 import 'package:meet_friends/screens/joinWithId.dart';
 
 class Home extends StatefulWidget {
@@ -15,7 +14,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HexColor('#323745'),
       body: Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -42,7 +40,13 @@ class _HomeState extends State<Home> {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(20),
-                      onTap: () => joinMeeting('2323dfdf224'),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const JoinWithId(),
+                          ),
+                        );
+                      },
                       child: Padding(
                         padding: const EdgeInsets.all(15),
                         child: Image.asset(
@@ -94,7 +98,7 @@ class _HomeState extends State<Home> {
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => const JoinWithId(),
+                              builder: (context) => const CreateMeeting(),
                             ),
                           );
                         },
@@ -126,26 +130,5 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
-  }
-
-  joinMeeting(String roomName) async {
-    try {
-      FeatureFlag featureFlag = FeatureFlag();
-      featureFlag.welcomePageEnabled = true;
-      featureFlag.resolution = FeatureFlagVideoResolution.HD_RESOLUTION;
-
-      var options = JitsiMeetingOptions(room: roomName)
-        ..subject = "Meeting with Friend"
-        ..userDisplayName = "Avishka Prabath"
-        ..userEmail = "myemail@email.com"
-        // ..userAvatarURL =
-        //     "https://someimageurl.com/image.jpg" // or .png
-        ..audioMuted = true
-        ..videoMuted = true;
-
-      await JitsiMeet.joinMeeting(options);
-    } catch (error) {
-      debugPrint("error: $error");
-    }
   }
 }

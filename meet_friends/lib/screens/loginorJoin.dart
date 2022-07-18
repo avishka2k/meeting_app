@@ -16,7 +16,6 @@ class _LoginOrJoinState extends State<LoginOrJoin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HexColor('#323745'),
       body: Center(
         child: Column(
           children: [

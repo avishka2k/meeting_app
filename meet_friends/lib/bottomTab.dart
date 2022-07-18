@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_final_fields
+// ignore_for_file: prefer_final_fields, prefer_const_constructors_in_immutables, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -8,7 +8,7 @@ import 'package:meet_friends/screens/setting.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class BottomTab extends StatefulWidget {
-  const BottomTab({Key? key}) : super(key: key);
+  BottomTab({assUserDetails});
 
   @override
   State<BottomTab> createState() => _BottomTabState();

@@ -1,10 +1,14 @@
 // ignore_for_file: avoid_print
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:meet_friends/firebaseAuth/googleAuth.dart';
+import 'package:meet_friends/model/userModel.dart';
 import 'package:meet_friends/screens/editProfile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Setting extends StatefulWidget {
   const Setting({Key? key}) : super(key: key);
@@ -16,16 +20,27 @@ class Setting extends StatefulWidget {
 bool notificaion = false;
 
 class _SettingState extends State<Setting> {
-  saveNotficationState() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('notificaion', notificaion);
-  }
+  User user = FirebaseAuth.instance.currentUser!;
+  UserModel loggedUser = UserModel();
 
   @override
   void initState() {
     saveNotficationState();
     lodeNotficationState();
     super.initState();
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get()
+        .then((value) {
+      loggedUser = UserModel.fromMap(value.data());
+      setState(() {});
+    });
+  }
+
+  saveNotficationState() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('notificaion', notificaion);
   }
 
   lodeNotficationState() async {
@@ -38,7 +53,6 @@ class _SettingState extends State<Setting> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HexColor('#323745'),
       body: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,28 +84,28 @@ class _SettingState extends State<Setting> {
                           children: [
                             Row(
                               children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 8),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8),
                                   child: CircleAvatar(
                                     backgroundImage:
-                                        AssetImage('assets/profile.jpeg'),
+                                        NetworkImage(user.photoURL!),
                                   ),
                                 ),
                                 const SizedBox(width: 20),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const [
+                                  children: [
                                     Text(
-                                      "Avishka Prabath",
-                                      style: TextStyle(
+                                      '${loggedUser.name}',
+                                      style: const TextStyle(
                                         fontSize: 13,
                                         color: Colors.white,
                                       ),
                                     ),
-                                    SizedBox(height: 6),
+                                    const SizedBox(height: 6),
                                     Text(
-                                      "av*****@gmail.com",
-                                      style: TextStyle(
+                                      '${loggedUser.email}',
+                                      style: const TextStyle(
                                         fontSize: 12,
                                         color: Colors.white60,
                                       ),
@@ -161,85 +175,142 @@ class _SettingState extends State<Setting> {
             },
           );
         }),
-        settingsItemsTheme('notification', 'Notification', () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                backgroundColor: HexColor('#323745'),
-                title: const Text(
-                  "Notification",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "Enable notification",
-                      style: TextStyle(color: Colors.white, fontSize: 14),
-                    ),
-                    Switch(
-                      value: notificaion,
-                      onChanged: (value) {
-                        setState(() {
-                          notificaion = value;
-                          print(notificaion);
-                          saveNotficationState();
-                          Navigator.of(context).pop();
-                        });
+        settingsItemsTheme(
+          'notification',
+          'Notification',
+          () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  backgroundColor: HexColor('#323745'),
+                  title: const Text(
+                    "Notification",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Enable notification",
+                        style: TextStyle(color: Colors.white, fontSize: 14),
+                      ),
+                      Switch(
+                        value: notificaion,
+                        onChanged: (value) {
+                          setState(() {
+                            notificaion = value;
+                            print(notificaion);
+                            saveNotficationState();
+                            Navigator.of(context).pop();
+                          });
+                        },
+                      )
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        ),
+        settingsItemsTheme(
+          'trash',
+          'Delete all history',
+          () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  backgroundColor: HexColor('#323745'),
+                  title: const Text(
+                    "Delete all history",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  content: const Text(
+                    "Are you sure you want to Delete \nall history data?",
+                    style: TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
                       },
-                    )
+                      child: Text(
+                        'cancel'.toUpperCase(),
+                        style: TextStyle(
+                          color: HexColor('#5AA6FF'),
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        deletHistory();
+                      },
+                      child: Text(
+                        'Yes'.toUpperCase(),
+                        style: TextStyle(
+                          color: HexColor('#5AA6FF'),
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
                   ],
-                ),
-              );
-            },
-          );
-        }),
-        settingsItemsTheme('exit', 'Sign Out', () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                backgroundColor: HexColor('#323745'),
-                title: const Text(
-                  "Sign Out",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-                content: const Text(
-                  "Are you sure you want to sign out?",
-                  style: TextStyle(color: Colors.white, fontSize: 14),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      'cancel'.toUpperCase(),
-                      style: TextStyle(
-                        color: HexColor('#5AA6FF'),
-                        fontSize: 15,
+                );
+              },
+            );
+          },
+        ),
+        settingsItemsTheme(
+          'exit',
+          'Sign Out',
+          () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  backgroundColor: HexColor('#323745'),
+                  title: const Text(
+                    "Sign Out",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  content: const Text(
+                    "Are you sure you want to sign out?",
+                    style: TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        'cancel'.toUpperCase(),
+                        style: TextStyle(
+                          color: HexColor('#5AA6FF'),
+                          fontSize: 15,
+                        ),
                       ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      GoogleAuth().logOut();
-                    },
-                    child: Text(
-                      'Yes'.toUpperCase(),
-                      style: TextStyle(
-                        color: HexColor('#5AA6FF'),
-                        fontSize: 15,
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        GoogleAuth().logOut(context);
+                      },
+                      child: Text(
+                        'Yes'.toUpperCase(),
+                        style: TextStyle(
+                          color: HexColor('#5AA6FF'),
+                          fontSize: 15,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              );
-            },
-          );
-        }),
+                  ],
+                );
+              },
+            );
+          },
+        ),
       ],
     );
   }
@@ -291,6 +362,44 @@ class _SettingState extends State<Setting> {
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> deletHistory() async {
+    User user = FirebaseAuth.instance.currentUser!;
+
+    try {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('meetings')
+          .get()
+          .then(
+        (snapshot) {
+          for (DocumentSnapshot ds in snapshot.docs) {
+            ds.reference.delete();
+          }
+        },
+      );
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Something went wrong",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black.withOpacity(0.5),
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
+    await Fluttertoast.showToast(
+      msg: "Deleted all history data",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: HexColor('#1F2431').withOpacity(0.7),
+      textColor: Colors.white,
+      fontSize: 16.0,
     );
   }
 }
