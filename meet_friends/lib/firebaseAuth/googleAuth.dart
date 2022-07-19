@@ -13,9 +13,7 @@ class GoogleAuth {
     return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return const Center(child: Text('Somting want wrong'));
-        } else if (snapshot.hasData) {
+        if (snapshot.hasData) {
           return BottomTab(assUserDetails: addDataToDatabase());
         } else {
           return const LoginOrJoin();
@@ -60,12 +58,6 @@ class GoogleAuth {
   }
 
   Future<void> logOut(context) async {
-    // showDialog(
-    //   context: context,
-    //   builder: (context) => const Center(
-    //     child: CircularProgressIndicator(),
-    //   ),
-    // );
     await Future.delayed(const Duration(seconds: 2));
     await FirebaseAuth.instance.signOut();
   }

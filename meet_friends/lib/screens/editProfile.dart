@@ -1,6 +1,6 @@
 // ignore_for_file: file_names, prefer_const_constructors, non_constant_identifier_names, avoid_print
-import 'dart:io';
 import 'dart:async';
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -128,7 +128,7 @@ class _EditProfileState extends State<EditProfile> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => pickInGallery(),
+          onTap: () {}, //pickInGallery(),
           child: Container(
             padding: EdgeInsets.all(4),
             color: HexColor('#000000').withOpacity(0.6),

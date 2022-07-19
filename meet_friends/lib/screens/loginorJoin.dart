@@ -21,7 +21,7 @@ class _LoginOrJoinState extends State<LoginOrJoin> {
           children: [
             const SizedBox(height: 70),
             Text(
-              "Free Meeting",
+              "TalkHost",
               style: TextStyle(
                 fontSize: 35,
                 color: HexColor('#5AA6FF'),
