@@ -64,7 +64,7 @@ class _HomeState extends State<Home> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 15,
-                      color: HexColor('#C7C4C4'),
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
                 ),
@@ -120,7 +120,7 @@ class _HomeState extends State<Home> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 15,
-                      color: HexColor('#C7C4C4'),
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
                 ),

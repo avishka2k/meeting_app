@@ -50,7 +50,6 @@ class _JoinWithIdState extends State<JoinWithId> {
                 saveBtn('Join', () {
                   if (_formKey.currentState!.validate()) {
                     joinMeeting(_joinWithId.text, audioCheckeds, videoChecked);
-                    print('object');
                   }
                 })
               ],

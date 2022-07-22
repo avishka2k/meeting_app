@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, deprecated_member_use
 
 import 'dart:math';
 
@@ -77,14 +77,14 @@ class _CreateMeetingState extends State<CreateMeeting> {
       width: 350,
       height: 50,
       decoration: BoxDecoration(
-        color: HexColor('#141A1E'),
+        color: Theme.of(context).buttonColor,
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
-            color: HexColor('#000000').withOpacity(0.40),
-            offset: const Offset(0, 6),
-            blurRadius: 8,
-            spreadRadius: -1,
+            color: Theme.of(context).shadowColor.withOpacity(0.20),
+            offset: const Offset(0, 3),
+            blurRadius: 7,
+            spreadRadius: 1,
           ),
         ],
       ),
@@ -97,9 +97,9 @@ class _CreateMeetingState extends State<CreateMeeting> {
             child: Text(
               btnText,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
-                color: Colors.white,
+                color: Theme.of(context).primaryColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -124,7 +124,7 @@ class _CreateMeetingState extends State<CreateMeeting> {
       ),
       cursorColor: HexColor('#5AA6FF'),
       decoration: InputDecoration(
-        fillColor: HexColor('#1F2431').withOpacity(0.70),
+        fillColor: Theme.of(context).backgroundColor,
         filled: true,
         labelText: label,
         labelStyle: TextStyle(

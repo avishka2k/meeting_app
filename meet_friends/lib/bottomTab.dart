@@ -65,7 +65,7 @@ class _BottomTabState extends State<BottomTab> {
           screens: buildScreens(),
           items: navBarsItems(),
           confineInSafeArea: true,
-          backgroundColor: HexColor('#222634'),
+          backgroundColor: Theme.of(context).bottomAppBarColor,
           handleAndroidBackButtonPress: true,
           resizeToAvoidBottomInset: true,
           stateManagement: true,

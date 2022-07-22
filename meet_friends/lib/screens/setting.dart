@@ -7,8 +7,10 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:meet_friends/firebaseAuth/googleAuth.dart';
 import 'package:meet_friends/model/userModel.dart';
 import 'package:meet_friends/screens/editProfile.dart';
+import 'package:meet_friends/themedata.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 class Setting extends StatefulWidget {
   const Setting({Key? key}) : super(key: key);
@@ -20,6 +22,7 @@ class Setting extends StatefulWidget {
 bool notificaion = false;
 
 class _SettingState extends State<Setting> {
+  bool isThemeSelect = true;
   User user = FirebaseAuth.instance.currentUser!;
   UserModel loggedUser = UserModel();
 
@@ -63,7 +66,15 @@ class _SettingState extends State<Setting> {
               child: Center(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: HexColor('#1F2431'),
+                    boxShadow: [
+                      BoxShadow(
+                        offset: const Offset(0, 3),
+                        color: Theme.of(context).shadowColor.withOpacity(0.2),
+                        blurRadius: 7,
+                        spreadRadius: 1,
+                      )
+                    ],
+                    color: Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(11),
                   ),
                   child: Material(
@@ -97,17 +108,21 @@ class _SettingState extends State<Setting> {
                                   children: [
                                     Text(
                                       '${loggedUser.name}',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 13,
-                                        color: Colors.white,
+                                        color: Theme.of(context)
+                                            .primaryColor
+                                            .withOpacity(0.9),
                                       ),
                                     ),
                                     const SizedBox(height: 6),
                                     Text(
                                       '${loggedUser.email}',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 12,
-                                        color: Colors.white60,
+                                        color: Theme.of(context)
+                                            .primaryColor
+                                            .withOpacity(0.6),
                                       ),
                                     ),
                                   ],
@@ -135,8 +150,8 @@ class _SettingState extends State<Setting> {
               padding: const EdgeInsets.only(top: 30, left: 25, bottom: 10),
               child: Text(
                 'settings'.toUpperCase(),
-                style: const TextStyle(
-                  color: Colors.grey,
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor.withOpacity(0.8),
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -153,28 +168,44 @@ class _SettingState extends State<Setting> {
       padding: const EdgeInsets.all(0),
       shrinkWrap: true,
       children: <Widget>[
-        settingsItemsTheme('palette1', 'Appearance', () {
-          showModalBottomSheet(
-            context: context,
-            builder: (BuildContext context) {
-              return Container(
-                height: 130,
-                decoration: BoxDecoration(
-                  color: HexColor('#323745'),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    appearanceList('Light'),
-                    appearanceList('Dark'),
-                    appearanceList('System default'),
-                  ],
-                ),
-              );
-            },
-          );
-        }),
+        settingsItemsTheme(
+          'palette1',
+          'Appearance',
+          () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  title: Text(
+                    "Notification",
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor, fontSize: 16),
+                  ),
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Enable light theme",
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 14),
+                      ),
+                      Switch(
+                        value:
+                            Provider.of<AppStateNotifier>(context).isDarkMode,
+                        onChanged: (boolVal) {
+                          Provider.of<AppStateNotifier>(context, listen: false)
+                              .updateTheme(boolVal);
+                        },
+                      )
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        ),
         settingsItemsTheme(
           'notification',
           'Notification',
@@ -183,17 +214,20 @@ class _SettingState extends State<Setting> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  backgroundColor: HexColor('#323745'),
-                  title: const Text(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  title: Text(
                     "Notification",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor, fontSize: 16),
                   ),
                   content: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         "Enable notification",
-                        style: TextStyle(color: Colors.white, fontSize: 14),
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 14),
                       ),
                       Switch(
                         value: notificaion,
@@ -221,14 +255,16 @@ class _SettingState extends State<Setting> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  backgroundColor: HexColor('#323745'),
-                  title: const Text(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  title: Text(
                     "Delete all history",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor, fontSize: 16),
                   ),
-                  content: const Text(
+                  content: Text(
                     "Are you sure you want to Delete \nall history data?",
-                    style: TextStyle(color: Colors.white, fontSize: 14),
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor, fontSize: 14),
                   ),
                   actions: [
                     TextButton(
@@ -270,14 +306,16 @@ class _SettingState extends State<Setting> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  backgroundColor: HexColor('#323745'),
-                  title: const Text(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  title: Text(
                     "Sign Out",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor, fontSize: 16),
                   ),
-                  content: const Text(
+                  content: Text(
                     "Are you sure you want to sign out?",
-                    style: TextStyle(color: Colors.white, fontSize: 14),
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor, fontSize: 14),
                   ),
                   actions: [
                     TextButton(
@@ -327,13 +365,13 @@ class _SettingState extends State<Setting> {
               Image.asset(
                 'assets/$icon.png',
                 width: 20,
-                color: Colors.white70,
+                color: Theme.of(context).primaryColor,
               ),
               const SizedBox(width: 20),
               Text(
                 text,
-                style: const TextStyle(
-                  color: Colors.white70,
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
                   fontSize: 15,
                 ),
               ),
@@ -348,7 +386,11 @@ class _SettingState extends State<Setting> {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          setState(() {
+            isThemeSelect = !isThemeSelect;
+          });
+        },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -356,9 +398,15 @@ class _SettingState extends State<Setting> {
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: Text(
                 themeName,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: Theme.of(context).primaryColor),
               ),
             ),
+            isThemeSelect
+                ? const Padding(
+                    padding: EdgeInsets.only(right: 20),
+                    child: Text('data'),
+                  )
+                : Container(),
           ],
         ),
       ),

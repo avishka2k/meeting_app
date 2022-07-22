@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, prefer_const_constructors, non_constant_identifier_names, avoid_print
+// ignore_for_file: file_names, prefer_const_constructors, non_constant_identifier_names, avoid_print, deprecated_member_use
 import 'dart:async';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,6 +15,8 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  final user = FirebaseAuth.instance.currentUser;
+
   final _firstName_controller = TextEditingController();
   final _lastName_controller = TextEditingController();
 
@@ -76,7 +78,7 @@ class _EditProfileState extends State<EditProfile> {
                           const SizedBox(height: 30),
                           textField(_lastName_controller, 'Last Name',
                               'Can\'t empty'),
-                          const SizedBox(height: 100),
+                          const SizedBox(height: 80),
                           saveBtn('Save', () {
                             if (_formKey.currentState!.validate()) {
                               updateDisplayName(
@@ -99,7 +101,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Widget profileImg() {
-    final image = AssetImage('assets/profile.jpeg');
+    final image = NetworkImage(user!.photoURL!);
     return ClipOval(
       child: Material(
         color: Colors.transparent,
@@ -148,14 +150,14 @@ class _EditProfileState extends State<EditProfile> {
       width: 350,
       height: 50,
       decoration: BoxDecoration(
-        color: HexColor('#141A1E'),
+        color: Theme.of(context).buttonColor,
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
-            color: HexColor('#000000').withOpacity(0.40),
-            offset: const Offset(0, 6),
-            blurRadius: 8,
-            spreadRadius: -1,
+            color: Theme.of(context).shadowColor.withOpacity(0.20),
+            offset: const Offset(0, 3),
+            blurRadius: 7,
+            spreadRadius: 1,
           ),
         ],
       ),
@@ -170,7 +172,7 @@ class _EditProfileState extends State<EditProfile> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.white,
+                color: Theme.of(context).primaryColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -192,7 +194,7 @@ class _EditProfileState extends State<EditProfile> {
       },
       controller: _controller,
       decoration: InputDecoration(
-        fillColor: HexColor('#1F2431').withOpacity(0.70),
+        fillColor: Theme.of(context).backgroundColor,
         filled: true,
         labelText: label,
         labelStyle: TextStyle(

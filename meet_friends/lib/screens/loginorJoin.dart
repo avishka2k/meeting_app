@@ -15,6 +15,10 @@ class LoginOrJoin extends StatefulWidget {
 class _LoginOrJoinState extends State<LoginOrJoin> {
   @override
   Widget build(BuildContext context) {
+    // final text = MediaQuery.of(context).platformBrightness == Brightness.dark
+    //     ? 'DarkTheme'
+    //     : 'LightTheme';
+
     return Scaffold(
       body: Center(
         child: Column(
@@ -39,7 +43,6 @@ class _LoginOrJoinState extends State<LoginOrJoin> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.white,
               ),
             ),
             const SizedBox(height: 100),

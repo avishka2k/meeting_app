@@ -1,9 +1,6 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:meet_friends/model/historyMethode.dart';
 import 'package:intl/intl.dart';
 
@@ -60,26 +57,21 @@ class _HistoryState extends State<History> {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: HexColor('#1F2431'),
+                  color: Theme.of(context).cardColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).shadowColor.withOpacity(0.20),
+                      offset: const Offset(0, 3),
+                      blurRadius: 7,
+                      spreadRadius: 1,
+                    ),
+                  ],
                 ),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
                     borderRadius: BorderRadius.circular(10),
-                    onTap: () async {
-                      User user = FirebaseAuth.instance.currentUser!;
-
-                      FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(user.uid)
-                          .collection('meetings')
-                          .get()
-                          .then((snapshot) {
-                        for (DocumentSnapshot ds in snapshot.docs) {
-                          ds.reference.delete();
-                        }
-                      });
-                    },
+                    onTap: () {},
                     child: ListTile(
                       title: Text(
                         '${(snapshot.data! as dynamic).docs[index]['meetingName']}',
@@ -90,6 +82,7 @@ class _HistoryState extends State<History> {
                               .docs[index]['createdAt']
                               .toDate(),
                         )}',
+                        style: TextStyle(color: Theme.of(context).primaryColor),
                       ),
                     ),
                   ),
