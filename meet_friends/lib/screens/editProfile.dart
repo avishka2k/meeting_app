@@ -35,7 +35,7 @@ class _EditProfileState extends State<EditProfile> {
         this.imageinGallery = imageTemp;
       });
     } on PlatformException catch (e) {
-      print('Fail: $e');
+      print('Error: $e');
     }
   }
 
@@ -242,10 +242,10 @@ class _EditProfileState extends State<EditProfile> {
     Navigator.pop(context);
   }
 
-  Future<void> updatePhotoUrl(photoURL) async {
+  Future<void> updatePhotoUrl() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      await user.updatePhotoURL(photoURL);
+      await user.updatePhotoURL(user.photoURL);
     }
   }
 }

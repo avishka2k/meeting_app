@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
     return Consumer<AppStateNotifier>(builder: (context, appState, child) {
       return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Meeting',
+        title: 'TalkHost',
         darkTheme: MyTheme.darkTheme,
         theme: MyTheme.lightTheme,
         themeMode: !appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,

@@ -36,61 +36,72 @@ class _HistoryState extends State<History> {
     _isCollectionExits();
   }
 
+  bool isEmptyList = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder(
-        stream: FirestoreMethods().meetingsHistory,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          return ListView.builder(
-            itemCount: (snapshot.data! as dynamic).docs.length,
-            itemBuilder: (context, index) => Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 5,
-                horizontal: 20,
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Theme.of(context).cardColor,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(context).shadowColor.withOpacity(0.20),
-                      offset: const Offset(0, 3),
-                      blurRadius: 7,
-                      spreadRadius: 1,
+      body: Column(
+        children: [
+          const SizedBox(height: 30),
+          StreamBuilder(
+            stream: FirestoreMethods().meetingsHistory,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return ListView.builder(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: (snapshot.data! as dynamic).docs.length,
+                itemBuilder: (context, index) => Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 5,
+                    horizontal: 20,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Theme.of(context).cardColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color:
+                              Theme.of(context).shadowColor.withOpacity(0.20),
+                          offset: const Offset(0, 3),
+                          blurRadius: 7,
+                          spreadRadius: 1,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(10),
-                    onTap: () {},
-                    child: ListTile(
-                      title: Text(
-                        '${(snapshot.data! as dynamic).docs[index]['meetingName']}',
-                      ),
-                      subtitle: Text(
-                        'Joined on ${DateFormat.yMMMd().format(
-                          (snapshot.data! as dynamic)
-                              .docs[index]['createdAt']
-                              .toDate(),
-                        )}',
-                        style: TextStyle(color: Theme.of(context).primaryColor),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(10),
+                        onTap: () {},
+                        child: ListTile(
+                          title: Text(
+                            '${(snapshot.data! as dynamic).docs[index]['meetingName']}',
+                          ),
+                          subtitle: Text(
+                            'Joined on ${DateFormat.yMMMd().format(
+                              (snapshot.data! as dynamic)
+                                  .docs[index]['createdAt']
+                                  .toDate(),
+                            )}',
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor),
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ),
-          );
-        },
+              );
+            },
+          ),
+        ],
       ),
     );
   }

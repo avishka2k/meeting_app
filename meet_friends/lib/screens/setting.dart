@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:meet_friends/firebaseAuth/googleAuth.dart';
+import 'package:meet_friends/model/historyMethode.dart';
 import 'package:meet_friends/model/userModel.dart';
 import 'package:meet_friends/screens/editProfile.dart';
 import 'package:meet_friends/themedata.dart';
@@ -31,14 +32,18 @@ class _SettingState extends State<Setting> {
     saveNotficationState();
     lodeNotficationState();
     super.initState();
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .get()
-        .then((value) {
-      loggedUser = UserModel.fromMap(value.data());
-      setState(() {});
-    });
+    try {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get()
+          .then((value) {
+        loggedUser = UserModel.fromMap(value.data());
+        setState(() {});
+      });
+    } catch (e) {
+      print('Error in: $e');
+    }
   }
 
   saveNotficationState() async {
@@ -55,112 +60,126 @@ class _SettingState extends State<Setting> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 100),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25),
-              child: Center(
-                child: Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        offset: const Offset(0, 3),
-                        color: Theme.of(context).shadowColor.withOpacity(0.2),
-                        blurRadius: 7,
-                        spreadRadius: 1,
-                      )
-                    ],
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(11),
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(10),
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const EditProfile(),
-                          ),
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 8),
-                                  child: CircleAvatar(
-                                    backgroundImage:
-                                        NetworkImage(user.photoURL!),
-                                  ),
-                                ),
-                                const SizedBox(width: 20),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${loggedUser.name}',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: Theme.of(context)
-                                            .primaryColor
-                                            .withOpacity(0.9),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Text(
-                                      '${loggedUser.email}',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Theme.of(context)
-                                            .primaryColor
-                                            .withOpacity(0.6),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image(
-                                image:
-                                    const AssetImage('assets/edit-button.png'),
-                                width: 20,
-                                color: HexColor('#5AA6FF'),
-                              ),
+    return StreamBuilder(
+        stream: FirestoreMethods().meetingsHistory,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return Scaffold(
+            body: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 100),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    child: Center(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              offset: const Offset(0, 3),
+                              color: Theme.of(context)
+                                  .shadowColor
+                                  .withOpacity(0.2),
+                              blurRadius: 7,
+                              spreadRadius: 1,
                             )
                           ],
+                          color: Theme.of(context).cardColor,
+                          borderRadius: BorderRadius.circular(11),
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(10),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const EditProfile(),
+                                ),
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 8),
+                                        child: CircleAvatar(
+                                          backgroundImage:
+                                              NetworkImage(user.photoURL!),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 20),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${loggedUser.name}',
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: Theme.of(context)
+                                                  .primaryColor
+                                                  .withOpacity(0.9),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            '${loggedUser.email}',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Theme.of(context)
+                                                  .primaryColor
+                                                  .withOpacity(0.6),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Image(
+                                      image: const AssetImage(
+                                          'assets/edit-button.png'),
+                                      width: 20,
+                                      color: HexColor('#5AA6FF'),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(top: 30, left: 25, bottom: 10),
+                    child: Text(
+                      'settings'.toUpperCase(),
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor.withOpacity(0.8),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  settingsItems(),
+                ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 30, left: 25, bottom: 10),
-              child: Text(
-                'settings'.toUpperCase(),
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor.withOpacity(0.8),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            settingsItems(),
-          ],
-        ),
-      ),
-    );
+          );
+        });
   }
 
   Widget settingsItems() {
