@@ -97,9 +97,9 @@ class _CreateMeetingState extends State<CreateMeeting> {
             child: Text(
               btnText,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
-                color: Theme.of(context).primaryColor,
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),

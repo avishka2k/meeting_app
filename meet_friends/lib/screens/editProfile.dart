@@ -172,7 +172,7 @@ class _EditProfileState extends State<EditProfile> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
-                color: Theme.of(context).primaryColor,
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -201,13 +201,10 @@ class _EditProfileState extends State<EditProfile> {
           color: HexColor('#B4B4B4'),
           fontSize: 13,
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(
-            color: HexColor('#1F2431'),
+            color: Colors.blue,
             width: 2,
           ),
         ),

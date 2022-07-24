@@ -64,8 +64,11 @@ class _SettingState extends State<Setting> {
         stream: FirestoreMethods().meetingsHistory,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return Scaffold(
+              backgroundColor: HexColor('#323745'),
+              body: const Center(
+                child: CircularProgressIndicator(),
+              ),
             );
           }
           return Scaffold(

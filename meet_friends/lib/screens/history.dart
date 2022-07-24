@@ -36,23 +36,21 @@ class _HistoryState extends State<History> {
     _isCollectionExits();
   }
 
-  bool isEmptyList = true;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          const SizedBox(height: 30),
-          StreamBuilder(
-            stream: FirestoreMethods().meetingsHistory,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              return ListView.builder(
+      body: StreamBuilder(
+        stream: FirestoreMethods().meetingsHistory,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return Column(
+            children: [
+              const SizedBox(height: 30),
+              ListView.builder(
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
                 itemCount: (snapshot.data! as dynamic).docs.length,
@@ -98,10 +96,10 @@ class _HistoryState extends State<History> {
                     ),
                   ),
                 ),
-              );
-            },
-          ),
-        ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }

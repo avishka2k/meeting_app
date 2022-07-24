@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -84,7 +84,7 @@ class _JoinWithIdState extends State<JoinWithId> {
           'Do not Connect to audio',
           style: TextStyle(
             fontSize: 13,
-            color: HexColor('#B4B4B4'),
+            color: Theme.of(context).primaryColor,
           ),
         ),
       ],
@@ -115,7 +115,7 @@ class _JoinWithIdState extends State<JoinWithId> {
           'Turn off my video',
           style: TextStyle(
             fontSize: 13,
-            color: HexColor('#B4B4B4'),
+            color: Theme.of(context).primaryColor,
           ),
         ),
       ],
@@ -127,11 +127,11 @@ class _JoinWithIdState extends State<JoinWithId> {
       width: 350,
       height: 50,
       decoration: BoxDecoration(
-        color: HexColor('#141A1E'),
+        color: Theme.of(context).buttonColor,
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
-            color: HexColor('#000000').withOpacity(0.40),
+            color: Theme.of(context).shadowColor.withOpacity(0.20),
             offset: const Offset(0, 6),
             blurRadius: 8,
             spreadRadius: -1,
@@ -174,20 +174,17 @@ class _JoinWithIdState extends State<JoinWithId> {
       ),
       cursorColor: HexColor('#5AA6FF'),
       decoration: InputDecoration(
-        fillColor: HexColor('#1F2431').withOpacity(0.70),
+        fillColor: Theme.of(context).backgroundColor,
         filled: true,
         labelText: label,
         labelStyle: TextStyle(
           color: HexColor('#B4B4B4'),
           fontSize: 13,
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(
-            color: HexColor('#1F2431'),
+          borderSide: const BorderSide(
+            color: Colors.blue,
             width: 2,
           ),
         ),
