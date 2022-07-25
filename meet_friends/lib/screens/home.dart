@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:meet_friends/screens/createMeeting.dart';
 import 'package:meet_friends/screens/joinWithId.dart';
+import 'package:meet_friends/screens/loggedJoin.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -43,7 +44,7 @@ class _HomeState extends State<Home> {
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => const JoinWithId(),
+                            builder: (context) => const LogedJion(),
                           ),
                         );
                       },

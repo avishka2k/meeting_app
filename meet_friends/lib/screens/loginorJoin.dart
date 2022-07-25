@@ -15,10 +15,6 @@ class LoginOrJoin extends StatefulWidget {
 class _LoginOrJoinState extends State<LoginOrJoin> {
   @override
   Widget build(BuildContext context) {
-    // final text = MediaQuery.of(context).platformBrightness == Brightness.dark
-    //     ? 'DarkTheme'
-    //     : 'LightTheme';
-
     return Scaffold(
       body: Center(
         child: Column(
