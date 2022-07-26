@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:jitsi_meet/feature_flag/feature_flag.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
-import 'package:meet_friends/model/userModel.dart';
 
 class LogedJion extends StatefulWidget {
   const LogedJion({Key? key}) : super(key: key);
@@ -19,8 +18,6 @@ class _LogedJionState extends State<LogedJion> {
   bool videoChecked = false;
 
   final _joinWithId = TextEditingController();
-  final _name = TextEditingController();
-
   final _formKey = GlobalKey<FormState>();
 
   @override

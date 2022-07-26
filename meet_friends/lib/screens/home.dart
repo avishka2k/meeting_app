@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:meet_friends/screens/createMeeting.dart';
-import 'package:meet_friends/screens/joinWithId.dart';
 import 'package:meet_friends/screens/loggedJoin.dart';
 
 class Home extends StatefulWidget {
