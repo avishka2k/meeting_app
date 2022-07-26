@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "960009954307",
+    "project_id": "meet-friends-95983",
+    "storage_bucket": "meet-friends-95983.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:960009954307:android:b84bca7a7fe67d3a5eda36",
+        "android_client_info": {
+          "package_name": "com.example.meet_friends"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "960009954307-0mjjqliulp9c4cdsmrpgatff7bcjr2ds.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUJpd6gp-KPYo1PJeWNb3lekIUNFUCfnI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "960009954307-0mjjqliulp9c4cdsmrpgatff7bcjr2ds.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
